@@ -1,0 +1,162 @@
+@font-face {
+    font-family: Oswald;
+    src: url(./Oswald/static/Oswald-Regular.ttf);
+}
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: #7d8597;
+    color: #f0f8ff;
+    font-family: Oswald;
+}
+.current-short{
+    margin: 70px auto 0px;
+    height: 196px;
+    font-size: larger;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #3B414F;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 7px 29px 0px;
+}
+
+#geocoder-container{
+    margin-top: 8px;
+}
+
+.current-short p {
+    text-align: center;
+    margin: 0px;
+}
+#location-temp {
+    justify-content: center;
+    padding-left: 8px;
+    font-size: 45px;
+}
+#location-name, #location-temp-description {
+    font-size: 22px;
+}
+
+.all-weather-data {
+    display: grid;
+    grid-template-columns: repeat(7, 175px);
+    grid-template-rows: 190px 175px 43.75px 131.25px;
+    margin: auto;
+}
+
+.all-weather-data>div{
+    margin: 5px;
+    border-radius: 8px;
+    background-color: #3B414F;
+}
+.title {
+    font-size: 12px;
+    margin-top: 6px;
+}
+
+.hourly-12 {
+    display: flex;
+    grid-column: 1 / 8;
+}
+.days-5 {
+    grid-area: 2 / 1 / 4 / 4;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+.moon {
+    grid-area: 4 / 1 / 5 / 4;
+    display: flex;
+}
+
+.pressure, .feels-like, .precipitation, .visibility {
+    grid-row: 3 / 5;
+}
+
+.hr {
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+    width: 87.5px;
+    align-items: center;
+}
+
+.day {
+    display: flex;
+    justify-content: space-around;
+}
+
+.days-5 p {
+    margin: 2px 0px 0px;
+    font-size: 14px;
+}
+
+.days-5 div {
+    border-style: none;
+}
+
+img.days-icon {
+    width: 24px;
+    height: 24px;
+    align-self: center;
+}
+
+img.hours-icon {
+    width: 42px;
+    height: 42px;
+    align-self: center;
+}
+
+.value {
+    font-size: 45px;
+    text-align: center;
+    margin: 5px 0px;
+}
+
+.air-quality, .humidity, .wind, .uv-index, .pressure, .feels-like, .precipitation, .visibility, .moon{
+    padding: 8px;
+}
+
+.air-quality, .uv-index {
+    color: #3B414F;
+}
+
+.shortDesc {
+    font-size: 12px;
+}
+
+.category {
+    font-size: 20px;
+    margin-top: 10px;
+}
+img.moon-icon {
+    width: auto;
+    height: 100px;
+    align-self: center;
+}
+
+#title-5-days {
+    font-size: 14px;
+}
+.moon-container {
+    display: flex;
+    margin-top: 4px;
+    margin: auto;
+    gap: 50px;
+    align-self: center;
+}
+
+.short-phrase {
+    width: 175px;
+    text-align: center;
+}
+
+.days-temp {
+    width: 30px;
+}
+.days-name {
+    width: 29px;
+}
