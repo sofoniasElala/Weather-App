@@ -1,13 +1,10 @@
-import { getAlpha2Code } from "i18n-iso-countries";
-// import { autofill } from "@mapbox/search-js-web";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
-import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import mapboxgl from "mapbox-gl";
 
 // geoPosition is array of latitude and longitude, on geoPosition[1], and gePosition[0] respectively
 async function getWeatherDataByLocation(geoPosition) {
-  const API_KEY = "ACCESS-TOKEN";  // ACCESS TOKEN IS HIDDEN FOR GIT COMMIT PURPOSES 
-  const API_KEY_2 = "ACCESS-TOKEN";
+  const API_KEY = process.env.CRED;
+  const API_KEY_2 = process.env.CRED1;
 
   try {
     const cityLocationResponse = await fetch(
@@ -65,7 +62,7 @@ async function getWeatherDataByLocation(geoPosition) {
       throw allWeatherResponseData;
     console.log("allWeatherResponseData: ", allWeatherResponseData);
 
-    return allWeatherResponseData;
+    return {Data: allWeatherResponseData, TimeZone: cityLocationResponseData.TimeZone.Name};
 
   } catch (err) {
     alert(err);
@@ -76,7 +73,7 @@ async function getWeatherDataByLocation(geoPosition) {
 
 function addressAutofill() {
   mapboxgl.accessToken =
-    "ACCESS-TOKEN";
+    process.env.MAPBOX_CRED;
   const geocoder = new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
     types: "place",
