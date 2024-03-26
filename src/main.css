@@ -12,7 +12,7 @@ body {
 }
 .current-short{
     margin: 70px auto 0px;
-    height: 196px;
+    height: 220px;
     font-size: larger;
     display: flex;
     flex-direction: column;
@@ -20,6 +20,10 @@ body {
     border-radius: 8px;
     background-color: #3B414F;
     box-shadow: rgba(0, 0, 0, 0.2) 0px 7px 29px 0px;
+}
+
+#location-detail {
+    font-size: 15px;
 }
 
 #geocoder-container{

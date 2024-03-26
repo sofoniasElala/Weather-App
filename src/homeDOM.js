@@ -40,7 +40,7 @@ function populateHourly(hourlyData, TodaysForecast, TomorrowsForecast, isDay, lo
         sunStatAdded = true;
         const hourData = document.createElement('div');
         hourData.classList.add('hr');
-        if(index !== 11) hourData.style.borderRightStyle = 'solid';
+        hourData.style.borderRightStyle = 'solid';
         const currentTime = document.createElement('p');
         currentTime.textContent = `${format(sunTimeAdjusted, "h:mmaa")}`;
         const icon = document.createElement('img');
@@ -244,21 +244,22 @@ function precipitation(TodaysForecast){
     precipitationElement.appendChild(shortDesc);
 }
 
-function moonPhase(isDayTime){
+function moonPhase(isDayTime, moonPhaseData, locationTimeZone){
     const moon = document.querySelector('.moon');
     moon.innerHTML = '';
+    const timeZoneFormatter = Intl.DateTimeFormat("en-US", { dateStyle: 'medium', timeStyle: 'medium', timeZone: locationTimeZone });
     const icon = document.createElement('img');
     icon.classList.add('moon-icon');
-    icon.src = full;
+    icon.src = icons[`${moonPhaseData.Phase}`];
     const container = document.createElement('div');
     container.classList.add('moon-container');
     const detailsContainer = document.createElement('div');
     const phase = document.createElement('p');
-    phase.textContent = `${'WAXING GIBBOUS'}`;
+    phase.textContent = `Phase: ${moonPhaseData.Phase.replace(/([a-z])([A-Z])/g, '$1 $2')}`;
     const lineBreak = document.createElement('hr');
     lineBreak.style.width = '195px';
     const setOrRise = document.createElement('p');
-    setOrRise.textContent = isDayTime ? `Moonrise: ${'7 PM'}` : `Moonset: ${'6 AM'}`;
+    setOrRise.textContent = isDayTime ? `Moonrise: ${format(new Date (timeZoneFormatter.format(new Date(getCorrectForecastDate(moonPhaseData.Rise)))).toISOString(), "h aa")}` : `Moonset: ${format(new Date (timeZoneFormatter.format(new Date(getCorrectForecastDate(moonPhaseData.Set)))).toISOString(), "h aa")}`;
     
     detailsContainer.appendChild(phase);
     detailsContainer.appendChild(lineBreak);
@@ -269,10 +270,14 @@ function moonPhase(isDayTime){
     moon.appendChild(container);
 }
 
-function populateCurrent(city, current){
+function populateCurrent(city, current, placeName){
     const locationName = document.querySelector('#location-name');
     // locationName.innerHTML = '';
     locationName.textContent = city;
+    const locationDetail = document.querySelector('#location-detail');
+    // locationName.innerHTML = '';
+    // eslint-disable-next-line prefer-destructuring
+    locationDetail.textContent = placeName.match(/, (.*)/)[1];
     const locationTemp = document.querySelector('#location-temp');
     locationTemp.style.display = 'flex';
     locationTemp.innerHTML = '';
@@ -288,8 +293,8 @@ function populateCurrent(city, current){
     locationDesc.textContent = current.WeatherText;
 }
 
-export default function populateWithData(current, hourly, fiveDays, city, timeZone){
-    populateCurrent(city, current[0]);
+export default function populateWithData(current, hourly, fiveDays, city, timeZone, placeName){
+    populateCurrent(city, current[0], placeName);
     populateHourly(hourly, fiveDays.DailyForecasts[0], fiveDays.DailyForecasts[1], current[0].IsDayTime, timeZone);
     populateDays(fiveDays.DailyForecasts, timeZone);
     airQuality(fiveDays.DailyForecasts[0]);
@@ -300,5 +305,5 @@ export default function populateWithData(current, hourly, fiveDays, city, timeZo
     pressure(current[0]);
     feelsLike(current[0]);
     precipitation(current[0]);
-    moonPhase(current[0].IsDayTime);
+    moonPhase(current[0].IsDayTime, fiveDays.DailyForecasts[0].Moon, timeZone);
 }

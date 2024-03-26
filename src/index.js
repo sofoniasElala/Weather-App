@@ -11,19 +11,21 @@ class App {
     #geocoder
 
     start(){
-        this.getWeatherData({center: [-80.843124, 35.227085], text: 'Charlotte'})
+        // this.getWeatherData({center: [-80.843124, 35.227085], text: 'Charlotte', place_name: 'Charlotte, North Carolina, United States'})
         this.#geocoder = addressAutofill();
         this.#geocoder.on("result", (e) => {
             this.getWeatherData(e.result); // center is an array with the coordinates of selected location in search
+            document.querySelector('.mapboxgl-ctrl-geocoder--input').value = '';
             console.log(e.result);
         });
     }
 
-    async getWeatherData({center, text}){
+    // eslint-disable-next-line camelcase
+    async getWeatherData({center, text, place_name}){
         try {
         this.#locationWeather = await getWeatherDataAPI(center);
        // this.print();
-       populate(this.#locationWeather.Data[0], this.#locationWeather.Data[2], this.#locationWeather.Data[1], text, this.#locationWeather.TimeZone);
+       populate(this.#locationWeather.Data[0], this.#locationWeather.Data[2], this.#locationWeather.Data[1], text, this.#locationWeather.TimeZone, place_name);
         } catch(err){
             console.log(err)
         }
