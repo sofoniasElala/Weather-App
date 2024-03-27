@@ -11,6 +11,7 @@ body {
     font-family: Oswald;
 }
 .current-short{
+    position: relative;
     margin: 70px auto 0px;
     height: 220px;
     font-size: larger;
@@ -20,6 +21,12 @@ body {
     border-radius: 8px;
     background-color: #3B414F;
     box-shadow: rgba(0, 0, 0, 0.2) 0px 7px 29px 0px;
+}
+
+#change-unit {
+    position: absolute;
+    right: -30px;
+    cursor: pointer;
 }
 
 #location-detail {
@@ -36,7 +43,6 @@ body {
 }
 #location-temp {
     justify-content: center;
-    padding-left: 8px;
     font-size: 45px;
 }
 #location-name, #location-temp-description {

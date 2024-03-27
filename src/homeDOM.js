@@ -1,6 +1,34 @@
-import { format, isBefore, subHours, addHours } from "date-fns";
+import { format, isBefore, addHours } from "date-fns";
 import * as icons from './iconsToImport';
-import full from './full.png';
+
+
+function convertUnit(unit, valueToConvert){
+    if(unit === 'f') return  {convertedValue: Math.round((valueToConvert - 32) * (5/9)), convertedUnit: '°C'};
+    if(unit === 'c') return  {convertedValue: Math.round((valueToConvert * (9/5)) + 32), convertedUnit: '°F'};
+
+    return undefined;
+}
+
+function changeUnit(unit){
+    const hourlyTemps = document.getElementsByClassName('hourly-temp');
+    Array.from(hourlyTemps).forEach(temp => {
+        temp.textContent = `${convertUnit(unit, Number(temp.textContent.match(/\d+(\.\d+)?/g)[0])).convertedValue}°`;
+    })
+    const boxTemp = document.querySelector('.temp');
+    boxTemp.textContent = `${convertUnit(unit, Number(boxTemp.textContent.match(/\d+(\.\d+)?/g)[0])).convertedValue}°`;
+
+    const daysTemp = document.getElementsByClassName('days-temp');
+    Array.from(daysTemp).forEach(temp => {
+        const convertedDaysTemp = convertUnit(unit, Number(temp.textContent.match(/\d+(\.\d+)?/g)[0]));
+        temp.textContent = `${convertedDaysTemp.convertedValue}${convertedDaysTemp.convertedUnit}`
+    })
+
+    const locationTemp = document.querySelector('.location-temp-value');
+    const convertedLocationTemp = convertUnit(unit, Number(locationTemp.textContent.match(/\d+(\.\d+)?/g)[0]));
+    locationTemp.textContent = `${convertedLocationTemp.convertedValue}${convertedLocationTemp.convertedUnit} | `;
+    const shortDesc = document.querySelector('.shortDesc');
+    shortDesc.textContent = `The dew point is ${convertUnit(unit, Number(shortDesc.textContent.match(/\d+(\.\d+)?/g)[0])).convertedValue}° right now.`;
+}
 
 function findIcon(id){
     const iconPairs = [[1, 2], [3, 4], [6, 7], [13, 14], [15, 26], [16, 17], [20, 21, 43, 44], [23, 25, 29, 19], [33, 34], [38, 35, 36], [39, 40], [41, 42]];
@@ -64,6 +92,7 @@ function populateHourly(hourlyData, TodaysForecast, TomorrowsForecast, isDay, lo
         icon.classList.add('hours-icon');
         icon.src = icons[`icon${findIcon(hour.WeatherIcon)}`];
         const currentTemp = document.createElement('p');
+        currentTemp.classList.add('hourly-temp');
         currentTemp.textContent = `${hour.Temperature.Value}°`;
 
         hourData.appendChild(currentTime);
@@ -88,13 +117,13 @@ console.log('time zone', new Date (timeZoneFormatter.format(new Date(forecast.Da
         icon.classList.add('days-icon');
         icon.src = icons[`icon${findIcon(forecast.Day.Icon)}`];
         const low = document.createElement('p');
-        low.textContent = `${forecast.Temperature.Minimum.Value}° F`;
+        low.textContent = `${forecast.Temperature.Minimum.Value} °F`;
         low.classList.add('days-temp');
         const shortPhrase = document.createElement('p');
         shortPhrase.textContent = forecast.Day.ShortPhrase;
         shortPhrase.classList.add('short-phrase');
         const high = document.createElement('p');
-        high.textContent = `${forecast.Temperature.Maximum.Value}° F`;
+        high.textContent = `${forecast.Temperature.Maximum.Value} °F`;
         high.classList.add('days-temp');
 
         dayData.appendChild(dayName);
@@ -221,7 +250,8 @@ function feelsLike(TodaysForecast){
     feels.innerHTML = '<p class="title">FEELS LIKE</p>';
     const value = document.createElement('p');
     value.classList.add('value');
-    value.textContent = `${TodaysForecast.RealFeelTemperature.Imperial.Value}° F`;
+    value.classList.add('temp');
+    value.textContent = `${TodaysForecast.RealFeelTemperature.Imperial.Value}°`;
     const category = document.createElement('p');
     category.classList.add('category');
     category.textContent = TodaysForecast.RealFeelTemperature.Imperial.Phrase;
@@ -282,7 +312,8 @@ function populateCurrent(city, current, placeName){
     locationTemp.style.display = 'flex';
     locationTemp.innerHTML = '';
     const locationTempValue = document.createElement('div');
-    locationTempValue.textContent = `${current.Temperature.Imperial.Value}° | `;
+    locationTempValue.classList.add('location-temp-value')
+    locationTempValue.textContent = `${current.Temperature.Imperial.Value}°F | `;
     const icon = document.createElement('img');
     icon.src = icons[`icon${findIcon(current.WeatherIcon)}`];
     icon.classList.add('hours-icon');
@@ -293,7 +324,7 @@ function populateCurrent(city, current, placeName){
     locationDesc.textContent = current.WeatherText;
 }
 
-export default function populateWithData(current, hourly, fiveDays, city, timeZone, placeName){
+ function populateWithData(current, hourly, fiveDays, city, timeZone, placeName){
     populateCurrent(city, current[0], placeName);
     populateHourly(hourly, fiveDays.DailyForecasts[0], fiveDays.DailyForecasts[1], current[0].IsDayTime, timeZone);
     populateDays(fiveDays.DailyForecasts, timeZone);
@@ -307,3 +338,5 @@ export default function populateWithData(current, hourly, fiveDays, city, timeZo
     precipitation(current[0]);
     moonPhase(current[0].IsDayTime, fiveDays.DailyForecasts[0].Moon, timeZone);
 }
+
+export {populateWithData, changeUnit}

@@ -1,17 +1,21 @@
 import {getWeatherDataByLocation as getWeatherDataAPI, addressAutofill} from "./weatherAPIhandler";
 import "./main.css";
 import "./modifiedMapboxSearchBar.css";
-import populate from "./homeDOM";
+import {populateWithData as populate, changeUnit} from "./homeDOM";
 // getWeatherDataByLocation('manchester');
 
 
 class App {
-    #searchResult
+    #unit = 'f';
     #locationWeather
     #geocoder
 
     start(){
         // this.getWeatherData({center: [-80.843124, 35.227085], text: 'Charlotte', place_name: 'Charlotte, North Carolina, United States'})
+        document.getElementById('change-unit').onclick = () => {
+            changeUnit(this.#unit);
+            this.#unit = this.#unit === 'f' ? 'c' : 'f';
+        }
         this.#geocoder = addressAutofill();
         this.#geocoder.on("result", (e) => {
             this.getWeatherData(e.result); // center is an array with the coordinates of selected location in search
