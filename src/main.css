@@ -3,16 +3,18 @@
     src: url(./Oswald/static/Oswald-Regular.ttf);
 }
 body {
+    position: relative;
     display: flex;
     flex-direction: column;
     height: 100vh;
     background-color: #7d8597;
     color: #f0f8ff;
+    margin: 0;
     font-family: Oswald;
 }
 .current-short{
     position: relative;
-    margin: 70px auto 0px;
+    margin: 15px auto 0px;
     height: 220px;
     font-size: larger;
     display: flex;
@@ -27,6 +29,8 @@ body {
     position: absolute;
     right: -30px;
     cursor: pointer;
+    border-radius: 8px;
+    border: none;
 }
 
 #location-detail {
@@ -169,4 +173,18 @@ img.moon-icon {
 }
 .days-name {
     width: 29px;
+}
+.accuWeather, .iconFinder {
+    height: 15px;
+    width: auto;
+}
+.atrribute-data-icons {
+    position: absolute;
+    right: 25px;
+    bottom: 10px;
+}
+
+footer {
+    padding: 15px;
+    text-align: center;
 }

@@ -9,9 +9,12 @@
     "sourceType": "module"
   },
   "rules": {
-    "no-console": "off",
     "no-unused-vars":"warn",
     "import/no-extraneous-dependencies":"off",
-    "lines-between-class-members":"off"
+    "lines-between-class-members":"off",
+    "no-param-reassign":"off",
+    "prefer-destructuring":"off",
+    "no-nested-ternary":"off",
+    "no-alert":"off"
   }
 }

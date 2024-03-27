@@ -9,6 +9,9 @@ function convertUnit(unit, valueToConvert){
     return undefined;
 }
 
+/** convert the units of elements that have temperature values.
+ * the given unit is the current unit of temperature.
+ */
 function changeUnit(unit){
     const hourlyTemps = document.getElementsByClassName('hourly-temp');
     Array.from(hourlyTemps).forEach(temp => {
@@ -34,7 +37,6 @@ function findIcon(id){
     const iconPairs = [[1, 2], [3, 4], [6, 7], [13, 14], [15, 26], [16, 17], [20, 21, 43, 44], [23, 25, 29, 19], [33, 34], [38, 35, 36], [39, 40], [41, 42]];
     let iconId = id;
     iconPairs.forEach(pairs => {
-        // eslint-disable-next-line prefer-destructuring
         if(pairs.includes(id)) iconId = pairs[0];
     })
 
@@ -42,25 +44,60 @@ function findIcon(id){
 
 }
 
+// adjust date to take in into account the api's unconventional forecasting
 function getCorrectForecastDate(date){
     const hourDiff = Number(format(Date.now(), "H")) > 7 ? Number(format(Date.now(), "h")) - 7 : 0;
     const timeToConvert = addHours(date, hourDiff);
 
-    console.log('hourDiff', hourDiff);
-    console.log('timeToConvert', timeToConvert);
-
     return timeToConvert;
 }
 
+// change uv index and air quality index's background color based on their category
+function changeColorOnIndex(type, element, category){
+    const qualityColor = [['Good', '#68BA17'], ['Moderate', '#ffea00'], ['Unhealthy sensitive', '#ff7b00'], ['Unhealthy', '#ff0000'], ['Very unhealthy', '#d80032'], ['Hazardous', '#450920']];
+    const uvColor = [['Low', '#68BA17'], ['Moderate', '#ffea00'], ['High', '#ff7b00'], ['Very High', '#ff0000']]
+
+    if(type === 'air'){
+        qualityColor.forEach(pair => {
+            if(pair[0] === category) element.style.backgroundColor = pair[1];
+        })
+    }
+    if(type === 'uv'){
+        uvColor.forEach(pair => {
+            if(pair[0] === category) element.style.backgroundColor = pair[1];
+        })
+    }
+
+    
+}
+
+// display air quality, uv index, precipitation, humidity...etc.
+function createCurrentWeatherDetailWithCategory(elementToRetrieve, innerHTML, valueText, classAttribute, categoryText, extraInfo=['', '']){
+    const parentElement = document.querySelector(elementToRetrieve);
+    parentElement.innerHTML = innerHTML;
+    const value = document.createElement('p');
+    value.classList.add('value');
+    if(extraInfo[1] !== '') value.classList.add(extraInfo[1]);
+    value.textContent = valueText;
+    const category = document.createElement('p');
+    category.classList.add(classAttribute);
+    category.textContent = categoryText;
+
+    parentElement.appendChild(value);
+    parentElement.appendChild(category);
+
+    if(extraInfo[0] === 'air') changeColorOnIndex('air', parentElement, category.textContent);
+    if(extraInfo[0] === 'uv') changeColorOnIndex('uv', parentElement, category.textContent);
+}
+
+// display time and temperature with the appropriate icons for the next 12 hours
 function populateHourly(hourlyData, TodaysForecast, TomorrowsForecast, isDay, locationTimeZone){
     const hourly = document.querySelector('.hourly-12');
     hourly.innerHTML = '';
     let sunStatAdded = false;
     const timeZoneFormatter = Intl.DateTimeFormat("en-US", { dateStyle: 'medium', timeStyle: 'medium', timeZone: locationTimeZone });
-    // eslint-disable-next-line no-nested-ternary
     const sunTime = isDay ? TodaysForecast.Sun.Set : (isBefore(new Date (timeZoneFormatter.format(new Date(hourlyData[0].DateTime))).toISOString(), new Date (timeZoneFormatter.format(new Date(TodaysForecast.Sun.Rise))).toISOString()) ? TodaysForecast.Sun.Rise :TomorrowsForecast.Sun.Rise);
     const sunTimeAdjusted = new Date (timeZoneFormatter.format(new Date(sunTime))).toISOString();
-    console.log('hourly', sunTimeAdjusted);
 
     hourlyData.forEach((hour, index) => {
         const hourTime = new Date (timeZoneFormatter.format(new Date(hour.DateTime))).toISOString();
@@ -102,12 +139,12 @@ function populateHourly(hourlyData, TodaysForecast, TomorrowsForecast, isDay, lo
     } )
 }
 
+// display date, icons, lowest and highest temperature for the next 5 days, today included.
 function populateDays(dailyForecasts, locationTimeZone){
     const days = document.querySelector('.days-5');
     days.innerHTML = '';
     const timeZoneFormatter = Intl.DateTimeFormat("en-US", { dateStyle: 'medium', timeStyle: 'medium', timeZone: locationTimeZone });
     dailyForecasts.forEach((forecast, index) => {
-console.log('time zone', new Date (timeZoneFormatter.format(new Date(forecast.Date))).toISOString())
         const dayData = document.createElement('div');
         dayData.classList.add('day');
         const dayName = document.createElement('p');
@@ -135,54 +172,13 @@ console.log('time zone', new Date (timeZoneFormatter.format(new Date(forecast.Da
     })
 
 }
-function changeColorOnIndex(type, element, category){
-    const qualityColor = [['Good', '#68BA17'], ['Moderate', '#ffea00'], ['Unhealthy sensitive', '#ff7b00'], ['Unhealthy', '#ff0000'], ['Very unhealthy', '#d80032'], ['Hazardous', '#450920']];
-    const uvColor = [['Low', '#68BA17'], ['Moderate', '#ffea00'], ['High', '#ff7b00'], ['Very High', '#ff0000']]
-
-    if(type === 'air'){
-        qualityColor.forEach(pair => {
-            // eslint-disable-next-line prefer-destructuring, no-param-reassign
-            if(pair[0] === category) element.style.backgroundColor = pair[1];
-        })
-    }
-    if(type === 'uv'){
-        uvColor.forEach(pair => {
-            // eslint-disable-next-line prefer-destructuring, no-param-reassign
-            if(pair[0] === category) element.style.backgroundColor = pair[1];
-        })
-    }
-
-    
-}
 
 function uvIndex(current){
-    const uv = document.querySelector('.uv-index');
-    uv.innerHTML = '<p class="title">UV INDEX</p>';
-    const value = document.createElement('p');
-    value.classList.add('value');
-    value.textContent = current.UVIndex;
-    const category = document.createElement('p');
-    category.classList.add('category');
-    category.textContent = current.UVIndexText;
-
-    uv.appendChild(value);
-    uv.appendChild(category);
-    changeColorOnIndex('uv', uv, category.textContent);
+    createCurrentWeatherDetailWithCategory('.uv-index', '<p class="title">UV INDEX</p>', current.UVIndex, 'category', current.UVIndexText, ['uv', '']);
 }
 
 function airQuality(TodaysForecast){
-    const quality = document.querySelector('.air-quality');
-    quality.innerHTML = '<p class="title">AIR QUALITY INDEX</p>';
-    const value = document.createElement('p');
-    value.classList.add('value');
-    value.textContent = TodaysForecast.AirAndPollen[0].Value;
-    const category = document.createElement('p');
-    category.classList.add('category');
-    category.textContent = TodaysForecast.AirAndPollen[0].Category;
-
-    quality.appendChild(value);
-    quality.appendChild(category);
-    changeColorOnIndex('air', quality, category.textContent);
+    createCurrentWeatherDetailWithCategory('.air-quality', '<p class="title">AIR QUALITY INDEX</p>', TodaysForecast.AirAndPollen[0].Value, 'category', TodaysForecast.AirAndPollen[0].Category, ['air', '']);
 }
 
 function humidity(TodaysForecast){
@@ -200,80 +196,34 @@ function humidity(TodaysForecast){
 }
 
 function wind(TodaysForecast){
-    const windElement = document.querySelector('.wind');
-    windElement.innerHTML = '<p class="title">WIND</p>';
-    const value = document.createElement('p');
-    value.classList.add('value');
-    value.textContent = `${Math.round(TodaysForecast.Wind.Speed.Imperial.Value)} MPH`;
-    const direction = document.createElement('p');
-    direction.classList.add('category');
-    direction.textContent = TodaysForecast.Wind.Direction.English;
-
-    windElement.appendChild(value);
-    windElement.appendChild(direction);
+    createCurrentWeatherDetailWithCategory('.wind', '<p class="title">WIND</p>', `${Math.round(TodaysForecast.Wind.Speed.Imperial.Value)} MPH`, 'category', TodaysForecast.Wind.Direction.English);
 }
 
 function visibility(TodaysForecast){
-    const visible = document.querySelector('.visibility');
-    visible.innerHTML = '<p class="title">VISIBILITY</p>';
-    const valueElement = document.createElement('p');
-    valueElement.classList.add('value');
     const value = TodaysForecast.Visibility.Imperial.Value;
-    valueElement.textContent = `${value} MI`;
-    const shortDesc = document.createElement('p');
-    shortDesc.classList.add('shortDesc');
-   if(value >= 3 && value <= 6) shortDesc.textContent = 'Fairly clear';
-   if(value > 6) shortDesc.textContent = 'Perfectly clear';
-   if(value <= 3 && value >= 2) shortDesc.textContent = 'Haze';
-   if(value < 2) shortDesc.textContent = 'Fog';
+    let textContent = '';
+    
+    if(value >= 3 && value <= 6) textContent = 'Fairly clear';
+    if(value > 6) textContent = 'Perfectly clear';
+    if(value <= 3 && value >= 2) textContent = 'Haze';
+    if(value < 2) textContent = 'Fog';
 
-    visible.appendChild(valueElement);
-    visible.appendChild(shortDesc);
+    createCurrentWeatherDetailWithCategory('.visibility', '<p class="title">VISIBILITY</p>', `${value} MI`, 'shortDesc', textContent);
 }
 
 function pressure(TodaysForecast){
-    const pressureElement = document.querySelector('.pressure');
-    pressureElement.innerHTML = '<p class="title">PRESSURE</p>';
-    const value = document.createElement('p');
-    value.classList.add('value');
-    value.textContent = `${Math.round(TodaysForecast.Pressure.Imperial.Value)} inHg`;
-    const category = document.createElement('p');
-    category.classList.add('category');
-    category.textContent = TodaysForecast.PressureTendency.LocalizedText;
-
-    pressureElement.appendChild(value);
-    pressureElement.appendChild(category);
+    createCurrentWeatherDetailWithCategory('.pressure', '<p class="title">PRESSURE</p>', `${Math.round(TodaysForecast.Pressure.Imperial.Value)} inHg`, 'category', TodaysForecast.PressureTendency.LocalizedText);
 }
 
 function feelsLike(TodaysForecast){
-    const feels = document.querySelector('.feels-like');
-    feels.innerHTML = '<p class="title">FEELS LIKE</p>';
-    const value = document.createElement('p');
-    value.classList.add('value');
-    value.classList.add('temp');
-    value.textContent = `${TodaysForecast.RealFeelTemperature.Imperial.Value}°`;
-    const category = document.createElement('p');
-    category.classList.add('category');
-    category.textContent = TodaysForecast.RealFeelTemperature.Imperial.Phrase;
-
-    feels.appendChild(value);
-    feels.appendChild(category);
+    createCurrentWeatherDetailWithCategory('.feels-like', '<p class="title">FEELS LIKE</p>', `${TodaysForecast.RealFeelTemperature.Imperial.Value}°`, 'category', TodaysForecast.RealFeelTemperature.Imperial.Phrase, ['', 'temp']);
 }
 
 function precipitation(TodaysForecast){
-    const precipitationElement = document.querySelector('.precipitation');
-    precipitationElement.innerHTML = '<p class="title">PRECIPITATION</p>';
-    const value = document.createElement('p');
-    value.classList.add('value');
-    value.textContent = `${TodaysForecast.PrecipitationSummary.Past6Hours.Imperial.Value}in`;
-    const shortDesc = document.createElement('p');
-    shortDesc.classList.add('shortDesc');
-    shortDesc.textContent = 'in the last 6hrs';
-
-    precipitationElement.appendChild(value);
-    precipitationElement.appendChild(shortDesc);
+    createCurrentWeatherDetailWithCategory('.precipitation', '<p class="title">PRECIPITATION</p>', `${TodaysForecast.PrecipitationSummary.Past6Hours.Imperial.Value}in`, 'shortDesc', 'in the last 6hrs');
 }
 
+// display the moon phase and when the moon sets/rises with the appropriate moon icon
 function moonPhase(isDayTime, moonPhaseData, locationTimeZone){
     const moon = document.querySelector('.moon');
     moon.innerHTML = '';
@@ -300,13 +250,11 @@ function moonPhase(isDayTime, moonPhaseData, locationTimeZone){
     moon.appendChild(container);
 }
 
+// display current city and temperature with short description and icon
 function populateCurrent(city, current, placeName){
     const locationName = document.querySelector('#location-name');
-    // locationName.innerHTML = '';
     locationName.textContent = city;
     const locationDetail = document.querySelector('#location-detail');
-    // locationName.innerHTML = '';
-    // eslint-disable-next-line prefer-destructuring
     locationDetail.textContent = placeName.match(/, (.*)/)[1];
     const locationTemp = document.querySelector('#location-temp');
     locationTemp.style.display = 'flex';
@@ -320,7 +268,6 @@ function populateCurrent(city, current, placeName){
     locationTemp.appendChild(locationTempValue);
     locationTemp.appendChild(icon);
     const locationDesc = document.querySelector('#location-temp-description');
-    // locationDesc.innerHTML = '';
     locationDesc.textContent = current.WeatherText;
 }
 
