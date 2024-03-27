@@ -9,7 +9,7 @@ async function getWeatherDataByLocation(geoPosition) {
 
   try {
     const cityLocationResponse = await fetch(
-      `http://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=${API_KEY}&q=${geoPosition[1]},${geoPosition[0]}&toplevel=true`,
+      `https://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=${API_KEY}&q=${geoPosition[1]},${geoPosition[0]}&toplevel=true`,
       {
         mode: "cors",
       }
@@ -23,19 +23,19 @@ async function getWeatherDataByLocation(geoPosition) {
       throw cityLocationResponseData;
 
     const currentConditionResponse = fetch(
-      `http://dataservice.accuweather.com/currentconditions/v1/${cityLocationResponseData.Key}?apikey=${API_KEY}&details=true`,
+      `https://dataservice.accuweather.com/currentconditions/v1/${cityLocationResponseData.Key}?apikey=${API_KEY}&details=true`,
       {
         mode: "cors",
       }
     );
     const fiveDayForecastResponse = fetch(
-      `http://dataservice.accuweather.com/forecasts/v1/daily/5day/${cityLocationResponseData.Key}?apikey=${API_KEY}&details=true`,
+      `https://dataservice.accuweather.com/forecasts/v1/daily/5day/${cityLocationResponseData.Key}?apikey=${API_KEY}&details=true`,
       {
         mode: "cors",
       }
     );
     const hourlyForecastResponse = fetch(
-        `http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/${cityLocationResponseData.Key}?apikey=${API_KEY}&details=true`,
+        `https://dataservice.accuweather.com/forecasts/v1/hourly/12hour/${cityLocationResponseData.Key}?apikey=${API_KEY}&details=true`,
         {
           mode: "cors",
         }
