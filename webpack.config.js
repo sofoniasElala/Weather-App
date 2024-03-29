@@ -3,10 +3,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
 
 module.exports = {
-    mode: 'development',
+    mode: 'production',
     entry: './src/index.js',
     output: {
-        filename: 'main.js',
+        filename: '[name].main.js',
         path: path.resolve(__dirname, 'dist'),
     },
     module: {
@@ -29,7 +29,19 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: './src/index.html',
         }),
-        new Dotenv()
+        new Dotenv(),
     ],
-    devtool: 'inline-source-map',
+    optimization: {
+        runtimeChunk: 'single',
+        splitChunks: {
+          cacheGroups: {
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name: 'vendors',
+              chunks: 'all',
+              maxSize: 240000, 
+            },
+          },
+        },
+      }
 }

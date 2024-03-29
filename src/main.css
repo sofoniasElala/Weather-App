@@ -14,7 +14,7 @@ body {
 }
 .current-short{
     position: relative;
-    margin: 15px auto 0px;
+    margin: 10px auto 0px;
     height: 220px;
     font-size: larger;
     display: flex;
@@ -174,10 +174,7 @@ img.moon-icon {
 .days-name {
     width: 29px;
 }
-.accuWeather, .iconFinder {
-    height: 15px;
-    width: auto;
-}
+
 .atrribute-data-icons {
     position: absolute;
     right: 25px;
@@ -185,6 +182,7 @@ img.moon-icon {
 }
 
 footer {
+    position: relative;
     padding: 15px;
     text-align: center;
 }
