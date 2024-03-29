@@ -12,8 +12,8 @@
 4. ### Customizable Preferences:
      * Users can customize their weather data preferences with either Celsius or Fahrenheit.
 
-![thumbnail](https://github.com/sofoniasElala/Todo-list/blob/main/src/weatherApp-screenshot.png)
-![thumbnail-2](https://github.com/sofoniasElala/Todo-list/blob/main/src/weatherApp-screenshot2.png)
+![thumbnail](https://github.com/sofoniasElala/Weather-App/blob/main/src/weatherApp-screenshot.png)
+![thumbnail-2](https://github.com/sofoniasElala/Weather-App/blob/main/src/weatherApp-screenshot2.png)
 
 ## Technologies Used:
 
