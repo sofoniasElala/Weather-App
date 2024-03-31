@@ -239,7 +239,7 @@ function moonPhase(isDayTime, moonPhaseData, locationTimeZone){
     const lineBreak = document.createElement('hr');
     lineBreak.style.width = '195px';
     const setOrRise = document.createElement('p');
-    setOrRise.textContent = isDayTime ? `Moonrise: ${format(new Date (timeZoneFormatter.format(new Date(getCorrectForecastDate(moonPhaseData.Rise)))).toISOString(), "h aa")}` : `Moonset: ${format(new Date (timeZoneFormatter.format(new Date(getCorrectForecastDate(moonPhaseData.Set)))).toISOString(), "h aa")}`;
+    setOrRise.textContent = isDayTime ? `Moonrise: ${format(new Date (timeZoneFormatter.format(new Date(moonPhaseData.Rise))).toISOString(), "h aa")}` : `Moonset: ${format(new Date (timeZoneFormatter.format(new Date(moonPhaseData.Set))).toISOString(), "h aa")}`;
     
     detailsContainer.appendChild(phase);
     detailsContainer.appendChild(lineBreak);

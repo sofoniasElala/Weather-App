@@ -28,7 +28,7 @@ class App {
         this.#locationWeather = await getWeatherDataAPI(center);
        populate(this.#locationWeather.Data[0], this.#locationWeather.Data[2], this.#locationWeather.Data[1], text, this.#locationWeather.TimeZone, place_name);
         } catch(err){
-            alert("Unable to get Weather data. Please, try again later. Thank you.");
+            alert("Unable to get some/all Weather data. Please, try again later. Thank you.");
         }
     }
 }
