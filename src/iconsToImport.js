@@ -26,6 +26,8 @@ import NewMoon from "./assets/moon-phases/NewMoon.png"
 import ThirdQuarter from "./assets/moon-phases/ThirdQuarter.png"
 import WaningCrescent from "./assets/moon-phases/WaningCrescent.png";
 import FirstQuarter from "./assets/moon-phases/FirstQuarter.png";
+import First from "./assets/moon-phases/First.png";
+import Last from "./assets/moon-phases/Last.png";
 import WaxingCrescent from "./assets/moon-phases/WaxingCrescent.png";
 import WaxingGibbous from "./assets/moon-phases/WaxingGibbous.png";
 import WaningGibbous from "./assets/moon-phases/WaningGibbous.png";
@@ -33,4 +35,4 @@ import accWeather from './assets/icons/AW_RGB_R.png';
 import iconFinder from './assets/icons/iconFinder2.png';
 
 export { icon1, icon3, icon5, icon6, icon8, icon11, icon12, icon13, icon15, icon16, icon18, icon20,
-icon22, icon23, icon24, icon32, icon33, icon37, icon38, icon39, icon41, rise, set, Full, NewMoon, ThirdQuarter, WaningCrescent, FirstQuarter, WaxingCrescent, WaxingGibbous, WaningGibbous, accWeather, iconFinder };
+icon22, icon23, icon24, icon32, icon33, icon37, icon38, icon39, icon41, rise, set, Full, NewMoon, ThirdQuarter, WaningCrescent, FirstQuarter, WaxingCrescent, WaxingGibbous, WaningGibbous, accWeather, iconFinder, First, Last };
